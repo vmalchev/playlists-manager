@@ -6,10 +6,10 @@
 
 
 ## Technologies Used
-*NodeJS
-*React
-*Spotify Web API
-*YouTube Data API (v3)
+- NodeJS
+- React
+- Spotify Web API
+- YouTube Data API (v3)
 
 ## License
 Copyright 2018
