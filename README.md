@@ -1,6 +1,4 @@
-# Youtube to Spotify Playlists Converter
-Converts Youtube playlists into Spotify playlists.
-
+# Transferring Playlists Between Streaming Platforms
 [Project Summary](https://docs.google.com/document/d/1oiIsYcD45I6ibbgitQ_3UDJL5AQkdo5GLibpCVOkFek/edit?usp=sharing)
 
 ## Features
