@@ -6,6 +6,7 @@
 
 ## Technologies Used
 - NodeJS
+- MySQL
 - React
 - Spotify Web API
 - YouTube Data API (v3)
