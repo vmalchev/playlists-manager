@@ -1,12 +1,51 @@
 "use strict";
 
-var http = require('http');
-var express = require('express');
-var app = express();
-var orm = require('orm');
-var path = require('path');
+const http = require('http');
+const orm = require('orm');
+const express = require('express');
+const path = require('path');
 
-var connectionString = 'mysql://root:@localhost/playlist_manager';
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const redis = require('redis');
+const redisStore = require('connect-redis')(session);
+const client  = redis.createClient();
+
+// const rootPath = path.normalize(path.join(__dirname, '..'));
+const genericRoutes = require('./Routes/GenericRoute');
+const userRoutes = require('./Routes/UserRoute');
+const transferRoutes = require('./Routes/TransferRoute');
+const playlistRoutes = require('./Routes/PlaylistRoute');
+const HttpStatus = require('http-status-codes');
+
+const SERVER_PORT = 3001;
+const app = express();
+
+// app.use(cookieParser());
+
+app.use(session({
+	secret : 'bruce wayne is batman',
+	resave : true,
+	saveUninitialized : false,
+	/// key : 'batman',
+	store : new redisStore({
+		host : 'localhost', 
+		port : 6379,
+		storage : 'redis',
+		client : client,
+	}),
+	cookie : {
+		expires: 600000,
+	},
+}));
+
+app.use(cookieParser("bruce_wayne_is_batman"));
+app.use(bodyParser.urlencoded({ extended : false }));
+app.use(bodyParser.json());
+
+const connectionString = 'mysql://root:@localhost/playlist_manager';
 app.use(orm.express(connectionString, { 
 	define: function (db, models, next) {
 		var errorHanler = function (err) {
@@ -24,7 +63,9 @@ app.use(orm.express(connectionString, {
 		db.load('./Entities/UserSharing.js', errorHanler);
 
 		db.sync(function(err) {
-			if (err) throw err;
+			if(err) {
+				throw err;
+			}
 		});
 
 		models.songs = db.models.Song;
@@ -39,34 +80,52 @@ app.use(orm.express(connectionString, {
     }
 }));
 
-app.listen('3001'); // read it from server configuration
-
-// might be moved to IndexController.js
-app.get('/', function(requst, response) {
-	// redirect to Home Controller
-	// response.redirect('/Home');
-	response.sendFile(__dirname + '/index.html');
+app.use(function (req, res, next) {
+	next();
 });
 
-app.get('/Song/:id', function(request, response) {
-	request.models.songs.get(1, function(err, song) {
-		console.log(song);
-	});
+app.use('/api', genericRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/transfers', transferRoutes);
+app.use('/api/playlists', playlistRoutes);
+
+// catch 404 and forwarding to error handler
+app.use(function (req, res, next) {
+	var err = new Error('Not Found');
+	err.status = 404;
+	next(err);
 });
 
-app.post('/Song', function(request, response) {
-	console.log(request.models.songs.create);
-	console.log();
+// Error handlers
+// development error handler
+// will print stacktrace
+/*
+if (app.get('env') === 'development') {
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.json('error', {
+      message: err.message,
+      error: err
+    });
+  });
+} else {
+  // production error handler
+  // no stacktraces leaked to user
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.json('error', {
+      message: err.message,
+      error: {}
+    });
+  });
+} */
 
-	request.models.songs.create({
-		title : 'Foo Fighters - Best of you',
-	}, function(err, song) {
-		if (err !== undefined && err !== null) {
-			console.error('ong error ' + err);
-			return;
-		}
+/*
+app.use(upload.array());
+app.use(cookieParser());
+app.use(session({secret: "Your secret key"})); */
 
-		console.log(song);
-	});
-	response.send('OK');
-});
+
+app.listen(SERVER_PORT); // read it from server configuration
+
+///module.exports = app;

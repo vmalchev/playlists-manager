@@ -15,4 +15,6 @@ router.post('/Platforms', function(req, res) {});
 
 router.get('/PlaylistSettings', function(req, res) {});
 
-router.post('PlaylistSettings', function(req, res) {});
+router.post('/PlaylistSettings', function(req, res) {});
+
+module.exports = router;

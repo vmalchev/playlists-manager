@@ -3,22 +3,26 @@
 module.exports = function(db, cb) {
 	var User = db.define('User', {
 		id : {
-			type: 'serial', 
-			key: true
+			type : 'serial', 
+			key : true
 		},
 		username : {
 			type : 'text',
-			unique: true,
-			required: true
+			unique : true,
+			required : true
 		},
 		email : {
 			type: 'text',
-			unique: true,
-			required: true
+			unique : true,
+			required : true
 		},
 		password : {
-			type: 'text',
-			required: true
+			type : 'text',
+			required : true
+		},
+		salt : {
+			type : 'text',
+			required : true
 		}
 	});
 
