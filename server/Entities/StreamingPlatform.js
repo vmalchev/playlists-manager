@@ -8,6 +8,11 @@ module.exports = function(db, cb) {
 		},
 		name : {
 			type : 'text',
-		}
+			required : true,
+		},
+		apiUrl : {
+			type : 'text',
+			required : true,
+		},
 	});
 }

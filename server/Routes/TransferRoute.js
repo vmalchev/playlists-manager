@@ -1,13 +1,12 @@
 'use strict';
 
-var service = require('../Services/TransferService');
+const SourcePlaylistService = require('../Services/TranseferServices/SourcePlaylistService.js');
 
 var express = require('express');
 var router = express.Router();
 
-router.get('/SourcePlaylist', function(req, res) {});
 
-router.post('/SourcePlaylist', function(req, res) {});
+router.post('/sourcePlaylist', SourcePlaylistService.setSourcePlaylist());
 
 router.get('/Platforms', function(req, res) {});
 

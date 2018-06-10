@@ -16,6 +16,6 @@ module.exports = function(db, cb) {
 
 	PlatformSetting.hasOne('streamingPlatform', db.models.StreamingPlatform, {
 		required : true,
-		reverse : 'PlatformSetting'
+		reverse : 'platformSettings'
 	});
 }
