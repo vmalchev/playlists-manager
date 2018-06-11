@@ -17,7 +17,7 @@ class AbstractProvider {
 			settings = this.platformSettings;
 
 		for (var i = 0; i < settings.length; i++) {
-			url += "&" + settings[i].key + "=" + settings[i].value;
+			url += (i === 0 ? '?' : '&') + settings[i].key + '=' + settings[i].value;
 		}
 
 		return url;
@@ -29,8 +29,7 @@ class AbstractProvider {
 				if (err) { 
 					reject(err);
 				}
-				
-				console.log('body ' + body);
+
 				resolve(body);
 			});
 		});

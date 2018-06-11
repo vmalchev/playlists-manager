@@ -8,28 +8,28 @@ class YouTube extends AbstractProvider {
 	}
 
 	getApiUrl(nextPageToken) {
-		return super.getApiUrl() + (nextPageToken !== null ? '&pageToken=' + nextPageToken : '');
+		return super.getApiUrl() + '&playlistId=' + this.playlistId + (nextPageToken !== null ? '&pageToken=' + nextPageToken : '');
 	}
 
-	getPlaylist() {
-		var url = this.getApiUrl(null),
+	async getPlaylist() {
+		var url,
 			titles = [],
 			doRequest = super.doRequest,
-			nextPageToken;
+			nextPageToken = null,
+			nextToken = true;
 
 		while (true) {
-			doRequest(url).then(data => {
-				if (data === null) {
-					return;
-				}
+			url = this.getApiUrl(nextPageToken);
 
-				nextPageToken = data['nextPageToken'];
-			});
-			
+			let response = await doRequest(url);
+			for (var i = 0; i < response.items.length; i++) {
+				titles.push(response.items[i].snippet.title);
+			}
+
+			nextPageToken = response.nextPageToken;
 			if (nextPageToken === undefined) {
 				break;
 			}
-			url += getApiUrl(nextPageToken);
 		}
 
 		return titles;

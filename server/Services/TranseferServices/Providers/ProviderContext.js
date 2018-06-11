@@ -6,8 +6,10 @@ module.exports.getSourcePlaylistProvider = function(request, response) {
 	return new Promise(function (resolve, reject) {
 		var playlistUrl = request.body.playlistUrl;
 
-		if (playlistUrl.match(/^https:\/\/(www\.?)youtube\.com\/watch\?v=[\w-]{11}(\&index=\d+|)\&list=(\w*)(\&index=\d+|)/)) {
-			var playlistId = playlistUrl.match(/^https:\/\/(www\.?)youtube\.com\/watch\?v=[\w-]{11}(\&index=\d+|)\&list=(\w*)(\&index=\d+|)/)[3];
+		const PatternYoutube = /^https:\/\/(www\.?)youtube\.com\/watch\?v=[\w-]{11}(\&index=\d+|)\&list=(\w*)(\&index=\d+|)/;
+
+		if (playlistUrl.match(PatternYoutube)) {
+			var playlistId = playlistUrl.match(PatternYoutube)[3];
 			request.models.streamingPlatforms
 				.oneAsync({ name : 'youtube' })
 				.then(function(streamingPlatform) {
